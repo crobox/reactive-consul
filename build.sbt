@@ -1,8 +1,3 @@
-// Scala Formatting
-ThisBuild / scalafmtVersion := "1.5.1"
-ThisBuild / scalafmtOnCompile := false     // all projects
-ThisBuild / scalafmtTestOnCompile := false // all projects
-
 releaseCrossBuild := true
 
 sonatypeProfileName := "com.crobox"
@@ -14,8 +9,8 @@ lazy val root = (project in file("."))
     inThisBuild(
       List(
         organization := "com.crobox.reactive-consul",
-        scalaVersion := "2.13.8",
-        crossScalaVersions := List("2.13.8"),
+        scalaVersion := "2.13.15",
+        crossScalaVersions := List("2.13.15"),
         javacOptions ++= Seq("-g", "-Xlint:unchecked", "-Xlint:deprecation", "-source", "11", "-target", "11"),
         scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-language:_", "-encoding", "UTF-8"),
         publishTo := {

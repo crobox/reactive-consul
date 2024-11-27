@@ -52,15 +52,14 @@ class ServiceBroker(serviceBrokerActor: ActorRef, consulClient: ConsulHttpClient
 
 object ServiceBroker {
 
-  def apply(rootActor: ActorSystem, httpClient: ConsulHttpClient, services: Set[ConnectionStrategy]): ServiceBroker = {
-    implicit val ec = ExecutionContext.Implicits.global
+  def apply(rootActor: ActorSystem, httpClient: ConsulHttpClient, services: Set[ConnectionStrategy])(implicit ec: ExecutionContext): ServiceBroker = {
     val serviceAvailabilityActorFactory = (factory: ActorRefFactory, service: ServiceDefinition, listener: ActorRef, onlyHealthyServices: Boolean) =>
       factory.actorOf(ServiceAvailabilityActor.props(httpClient, service, listener, onlyHealthyServices))
     val actorRef = rootActor.actorOf(ServiceBrokerActor.props(services, serviceAvailabilityActorFactory), "ServiceBroker")
     new ServiceBroker(actorRef, httpClient)
   }
 
-  def apply(consulAddress: URL, services: Set[ConnectionStrategy]): ServiceBroker = {
+  def apply(consulAddress: URL, services: Set[ConnectionStrategy])(implicit ec: ExecutionContext): ServiceBroker = {
     implicit val rootActor = ActorSystem("reactive-consul")
     val httpClient = new PekkoHttpConsulClient(consulAddress)
     client.ServiceBroker(rootActor, httpClient, services)
