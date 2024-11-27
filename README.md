@@ -1,33 +1,14 @@
-[![Build Status](https://travis-ci.org/dlouwers/reactive-consul.svg?branch=master)](https://travis-ci.org/dlouwers/reactive-consul)
-[![Maven Central](https://img.shields.io/maven-central/v/nl.stormlantern/reactive-consul_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/nl.stormlantern/reactive-consul)
+[![Maven Central](https://img.shields.io/maven-central/v/com.crobox.reactive-consul/client_2.13.svg)](https://maven-badges.herokuapp.com/maven-central/nl.stormlantern/reactive-consul)
 
 # Reactive Consul
 This project is a Consul client for Scala. It uses non-blocking I/O to communicate with a Consul cluster. You can use
 the ServiceBroker to get out of the box support for automatic-clustering, loadbalancing and failover or you can use
 the low-level ConsulHttpClient.
 
-
-## Releases
-
-### 0.3.0
-
-* Multiple _connectionStrategies_ are now allowed per named service so that they can be distinguished between by tags
-
-### 0.2.1
-
-* Fixed the POM having an unwanted dependencies
-
-### 0.2.0
-
-* Supports Scala 2.12
-* Uses pekko-http instead of Spray, reducing the amount of dependencies (thanks [David Buschman](https://github.com/dbuschman7))
-* Uses native JDK 8 base64, reducing the amount of dependencies (thanks [David Buschman](https://github.com/dbuschman7))
-* Bootstrapping the library with SRV record is now an extra dependency (thanks [David Buschman](https://github.com/dbuschman7)) 
-
 ## Requirements
 
 * Java 8
-* Scala 2.11 or 2.12
+* Scala 2.13
 
 ## Adding it to your project
 Reactive Consul is available via [Maven Central](https://search.maven.org/), simply add it to your SBT build:
