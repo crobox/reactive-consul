@@ -9,8 +9,7 @@ import scala.concurrent.Future
 
 class SessionActor(httpClient: ConsulHttpClient, listener: ActorRef) extends Actor {
 
-  import scala.concurrent.ExecutionContext.Implicits.global
-
+  import context.dispatcher
   // Actor state
   var sessionId: Option[UUID] = None
 

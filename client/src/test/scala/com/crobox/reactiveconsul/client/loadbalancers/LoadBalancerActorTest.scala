@@ -2,10 +2,11 @@ package com.crobox.reactiveconsul.client.loadbalancers
 
 import com.crobox.reactiveconsul.client.discovery.{ConnectionHolder, ConnectionProvider}
 import com.crobox.reactiveconsul.client.{ClientSpec, ServiceUnavailableException}
+import org.apache.pekko.actor.ActorRef
 import org.apache.pekko.actor.Status.Failure
 import org.apache.pekko.testkit.TestActorRef
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class LoadBalancerActorTest extends ClientSpec {
 
@@ -19,7 +20,7 @@ class LoadBalancerActorTest extends ClientSpec {
     val instanceKey = "instanceKey"
     (() => loadBalancer.selectConnection).expects().returns(Some(instanceKey))
     val sut = TestActorRef(new LoadBalancerActor(loadBalancer, "service1"))
-    (connectionProvider.getConnectionHolder _).expects(instanceKey, sut).returns(Future.successful(connectionHolder))
+    (connectionProvider.getConnectionHolder(_: String, _: ActorRef)(_: ExecutionContext)).expects(instanceKey, sut, sut.dispatcher).returns(Future.successful(connectionHolder))
     (connectionProvider.destroy _).expects()
     sut.underlyingActor.connectionProviders.put(instanceKey, connectionProvider)
     sut ! LoadBalancerActor.GetConnection
@@ -32,7 +33,7 @@ class LoadBalancerActorTest extends ClientSpec {
     val expectedException = new ServiceUnavailableException("service1")
     (() => loadBalancer.selectConnection).expects().returns(Some(instanceKey))
     val sut = TestActorRef(new LoadBalancerActor(loadBalancer, "service1"))
-    (connectionProvider.getConnectionHolder _).expects(instanceKey, sut).returns(Future.failed(expectedException))
+    (connectionProvider.getConnectionHolder(_: String, _: ActorRef)(_: ExecutionContext)).expects(instanceKey, sut, sut.dispatcher).returns(Future.failed(expectedException))
     (connectionProvider.destroy _).expects()
     sut.underlyingActor.connectionProviders.put(instanceKey, connectionProvider)
     sut ! LoadBalancerActor.GetConnection

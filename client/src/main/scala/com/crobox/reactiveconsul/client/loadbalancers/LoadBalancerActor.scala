@@ -5,13 +5,12 @@ import com.crobox.reactiveconsul.client.discovery._
 import com.crobox.reactiveconsul.client.loadbalancers.LoadBalancerActor._
 import org.apache.pekko.actor.Status.Failure
 import org.apache.pekko.actor.{Actor, ActorLogging, Props}
-
+import org.apache.pekko.pattern.pipe
 import scala.collection.mutable
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class LoadBalancerActor(loadBalancer: LoadBalancer, key: String) extends Actor with ActorLogging {
 
-  import org.apache.pekko.pattern.pipe
+  import context.dispatcher
 
   // Actor state
   val connectionProviders = mutable.Map.empty[String, ConnectionProvider]

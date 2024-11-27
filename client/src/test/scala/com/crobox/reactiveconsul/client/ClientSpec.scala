@@ -11,6 +11,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
+import scala.concurrent.ExecutionContext
+
 class ClientSpec(val config: Config = ConfigFactory.load())
     extends TestKit(ActorSystem("TestSystem", config))
     with ImplicitSender
@@ -21,5 +23,5 @@ class ClientSpec(val config: Config = ConfigFactory.load())
     with MockFactory
     with Logging {
 
-  implicit val ec = CallingThreadExecutionContext()
+  implicit val ec: ExecutionContext = CallingThreadExecutionContext()
 }
