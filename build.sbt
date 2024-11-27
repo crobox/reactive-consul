@@ -2,6 +2,8 @@ releaseCrossBuild := true
 
 sonatypeProfileName := "com.crobox"
 
+ThisBuild / versionScheme := Some("early-semver")
+
 lazy val root = (project in file("."))
   .settings(
     publish := {},
