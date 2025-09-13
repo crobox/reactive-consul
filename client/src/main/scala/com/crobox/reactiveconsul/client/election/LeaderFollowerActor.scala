@@ -6,14 +6,15 @@ import org.apache.pekko.actor.{Actor, Props}
 import spray.json._
 
 import java.util.UUID
+import scala.concurrent.ExecutionContext
 
 class LeaderFollowerActor(httpClient: ConsulHttpClient, sessionId: UUID, key: String, host: String, port: Int)
     extends Actor
     with DefaultJsonProtocol {
 
-  implicit val ec = context.dispatcher
+  implicit val ec: ExecutionContext = context.dispatcher
 
-  implicit val leaderInfoFormat = jsonFormat2(LeaderInfo)
+  implicit val leaderInfoFormat: RootJsonFormat[LeaderInfo] = jsonFormat2(LeaderInfo.apply)
   val leaderInfoBytes           = LeaderInfo(host, port).toJson.compactPrint.getBytes("UTF-8")
 
   // Actor state

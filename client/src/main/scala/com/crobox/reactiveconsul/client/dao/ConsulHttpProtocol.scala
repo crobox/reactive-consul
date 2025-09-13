@@ -9,7 +9,7 @@ import java.util.Base64
 
 trait ConsulHttpProtocol extends DefaultJsonProtocol {
 
-  implicit val uuidFormat = new JsonFormat[UUID] {
+  implicit val uuidFormat: JsonFormat[UUID] = new JsonFormat[UUID] {
     override def read(json: JsValue): UUID = json match {
       case JsString(uuid) => try {
         UUID.fromString(uuid)
@@ -22,7 +22,7 @@ trait ConsulHttpProtocol extends DefaultJsonProtocol {
     override def write(obj: UUID): JsValue = JsString(obj.toString)
   }
 
-  implicit val binaryDataFormat = new JsonFormat[BinaryData] {
+  implicit val binaryDataFormat: JsonFormat[BinaryData] = new JsonFormat[BinaryData] {
     override def read(json: JsValue): BinaryData = json match {
       case JsString(data) => try {
         BinaryData(Base64.getMimeDecoder.decode(data))
@@ -41,14 +41,14 @@ trait ConsulHttpProtocol extends DefaultJsonProtocol {
     "Node", "Address", "ServiceID", "ServiceName", "ServiceTags", "ServiceAddress", "ServicePort"
   )
 
-  implicit val nodeFormat = jsonFormat(Node, "Node", "Address")
-  implicit val healthServiceFormat = jsonFormat(Service, "ID", "Service", "Tags", "Address", "Port")
-  implicit val healthServiceInstanceFormat = jsonFormat(HealthServiceInstance, "Node", "Service")
+  implicit val nodeFormat: RootJsonFormat[Node] = jsonFormat(Node.apply, "Node", "Address")
+  implicit val healthServiceFormat: RootJsonFormat[Service] = jsonFormat(Service.apply, "ID", "Service", "Tags", "Address", "Port")
+  implicit val healthServiceInstanceFormat: RootJsonFormat[HealthServiceInstance] = jsonFormat(HealthServiceInstance.apply, "Node", "Service")
 
-  implicit val httpCheckFormat = jsonFormat(HttpHealthCheck, "HTTP", "Interval")
-  implicit val scriptCheckFormat = jsonFormat(ScriptHealthCheck, "Script", "Interval")
-  implicit val ttlCheckFormat = jsonFormat(TTLHealthCheck, "TTL")
-  implicit val checkWriter = lift {
+  implicit val httpCheckFormat: RootJsonFormat[HttpHealthCheck] = jsonFormat(HttpHealthCheck.apply, "HTTP", "Interval")
+  implicit val scriptCheckFormat: RootJsonFormat[ScriptHealthCheck] = jsonFormat(ScriptHealthCheck.apply, "Script", "Interval")
+  implicit val ttlCheckFormat: RootJsonFormat[TTLHealthCheck] = jsonFormat(TTLHealthCheck.apply, "TTL")
+  implicit val checkWriter: JsonFormat[HealthCheck] = lift {
     new JsonWriter[HealthCheck] {
       override def write(obj: HealthCheck): JsValue = obj match {
         case obj: ScriptHealthCheck => obj.toJson
@@ -57,8 +57,8 @@ trait ConsulHttpProtocol extends DefaultJsonProtocol {
       }
     }
   }
-  implicit val serviceRegistrationFormat = jsonFormat(ServiceRegistration, "Name", "ID", "Tags", "Address", "Port", "Check")
-  implicit val sessionCreationFormat = jsonFormat(SessionCreation, "LockDelay", "Name", "Node", "Checks", "Behavior", "TTL")
-  implicit val keyDataFormat = jsonFormat(KeyData, "Key", "CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Value", "Session")
-  implicit val sessionInfoFormat = jsonFormat(SessionInfo, "LockDelay", "Checks", "Node", "ID", "CreateIndex", "Name", "Behavior", "TTL")
+  implicit val serviceRegistrationFormat: RootJsonFormat[ServiceRegistration] = jsonFormat(ServiceRegistration.apply, "Name", "ID", "Tags", "Address", "Port", "Check")
+  implicit val sessionCreationFormat: RootJsonFormat[SessionCreation] = jsonFormat(SessionCreation.apply, "LockDelay", "Name", "Node", "Checks", "Behavior", "TTL")
+  implicit val keyDataFormat: RootJsonFormat[KeyData] = jsonFormat(KeyData.apply, "Key", "CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Value", "Session")
+  implicit val sessionInfoFormat: RootJsonFormat[SessionInfo] = jsonFormat(SessionInfo.apply, "LockDelay", "Checks", "Node", "ID", "CreateIndex", "Name", "Behavior", "TTL")
 }

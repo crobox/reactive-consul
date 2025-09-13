@@ -12,9 +12,18 @@ lazy val root = (project in file("."))
       List(
         organization := "com.crobox.reactive-consul",
         scalaVersion := "2.13.15",
-        crossScalaVersions := List("2.13.15"),
+        crossScalaVersions := List("2.13.15", "3.3.4"),
         javacOptions ++= Seq("-g", "-Xlint:unchecked", "-Xlint:deprecation", "-source", "11", "-target", "11"),
-        scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-language:_", "-encoding", "UTF-8"),
+        scalacOptions ++= {
+          CrossVersion.partialVersion(scalaVersion.value) match {
+            case Some((2, 13)) =>
+              Seq("-unchecked", "-deprecation", "-feature", "-language:_", "-encoding", "UTF-8")
+            case Some((3, _)) =>
+              Seq("-unchecked", "-deprecation", "-feature", "-language:implicitConversions", "-encoding", "UTF-8")
+            case _ =>
+              Seq("-unchecked", "-deprecation", "-feature", "-encoding", "UTF-8")
+          }
+        },
         publishTo := {
           val nexus = "https://oss.sonatype.org/"
           if (version.value.trim.endsWith("SNAPSHOT"))
@@ -61,7 +70,7 @@ lazy val client: Project = (project in file("client"))
     name := "client",
     sbtrelease.ReleasePlugin.autoImport.releasePublishArtifactsAction := PgpKeys.publishSigned.value,
     libraryDependencies ++= Seq(
-      "ch.qos.logback"   % "logback-classic" % "1.4.7",
+      "ch.qos.logback"   % "logback-classic" % "1.5.12",
       "io.spray"         %% "spray-json"     % "1.3.6",
       "org.apache.pekko" %% "pekko-actor"    % Dependencies.PekkoVersion,
       "org.apache.pekko" %% "pekko-slf4j"    % Dependencies.PekkoVersion,
@@ -69,7 +78,7 @@ lazy val client: Project = (project in file("client"))
       "org.apache.pekko" %% "pekko-http"     % Dependencies.PekkoHttpVersion,
       // test dependencies
       "org.apache.pekko" %% "pekko-testkit" % Dependencies.PekkoVersion % Test,
-      "org.scalatest"    %% "scalatest"     % "3.2.15"                  % Test,
-      "org.scalamock"    %% "scalamock"     % "5.2.0"                   % Test
+      "org.scalatest"    %% "scalatest"     % "3.2.19"                  % Test,
+      "org.scalamock"    %% "scalamock"     % "6.0.0"                   % Test
     )
   )

@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 
 class ServiceBroker(serviceBrokerActor: ActorRef, consulClient: ConsulHttpClient)(implicit ec: ExecutionContext) extends RetryPolicy with Logging {
 
-  private[this] implicit val timeout = Timeout(10.seconds)
+  private[this] implicit val timeout: Timeout = Timeout(10.seconds)
 
   def withService[A, B](name: String)(f: A => Future[B]): Future[B] = {
     logger.info(s"Trying to get connection for service $name")

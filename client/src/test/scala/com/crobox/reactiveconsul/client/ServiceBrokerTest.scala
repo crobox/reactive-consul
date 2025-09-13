@@ -21,8 +21,8 @@ class ServiceBrokerTest extends ClientSpec {
     (() => connectionHolder.loadBalancer).expects().returns(loadBalancer)
     val sut = new ServiceBroker(self, httpClient)
 
-    val result: Future[Boolean] = sut.withService("service1") { service: Boolean =>
-      Future.successful(service)
+    val result: Future[Boolean] = sut.withService("service1") { (conn: Boolean) =>
+      Future.successful(conn)
     }
     expectMsgPF() {
       case ServiceBrokerActor.GetServiceConnection("service1") =>
@@ -37,7 +37,7 @@ class ServiceBrokerTest extends ClientSpec {
     (() => connectionHolder.loadBalancer).expects().returns(loadBalancer)
     val sut = new ServiceBroker(self, httpClient)
 
-    val result: Future[Boolean] = sut.withService[Boolean, Boolean]("service1") { service: Boolean =>
+    val result: Future[Boolean] = sut.withService[Boolean, Boolean]("service1") { (conn: Boolean) =>
       throw new RuntimeException()
     }
     expectMsgPF() {
@@ -51,8 +51,8 @@ class ServiceBrokerTest extends ClientSpec {
   it should "throw an error when an excpetion is returned" in new TestScope {
     val sut = new ServiceBroker(self, httpClient)
 
-    val result: Future[Boolean] = sut.withService("service1") { service: Boolean =>
-      Future.successful(service)
+    val result: Future[Boolean] = sut.withService("service1") { (conn: Boolean) =>
+      Future.successful(conn)
     }
     expectMsgPF() {
       case ServiceBrokerActor.GetServiceConnection("service1") =>

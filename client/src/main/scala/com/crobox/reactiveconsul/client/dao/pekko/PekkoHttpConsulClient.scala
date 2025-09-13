@@ -221,9 +221,9 @@ class PekkoHttpConsulClient(host: URL)(implicit actorSystem: ActorSystem)
     Http()
       .singleRequest(request)
       .flatMap(validStatus)
-      .flatMap { response: HttpResponse =>
-        parseBody(response).map(body => {
-          ConsulResponse(response.status, response.entity.contentType.mediaType, response.headers, body)
+      .flatMap { resp =>
+        parseBody(resp).map(body => {
+          ConsulResponse(resp.status, resp.entity.contentType.mediaType, resp.headers, body)
         })
       }
   }
